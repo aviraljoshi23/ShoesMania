@@ -1,9 +1,21 @@
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logOut } from '../Service/UserSlice';
 export default function NavBar() {
     const {brandList} = useSelector(state=>state.brand.value);
     console.log("ON Brand Page")
     console.log(brandList);
+
+   let {isLoggedIn} =  useSelector(state=>state.user.value);
+   console.log(isLoggedIn);
+   let dispatch = useDispatch();
+   let navigate =  useNavigate();
+   const signout = ()=>{
+    dispatch(logOut());
+    navigate("/");
+ }
     return <>
         <div className="container-fluid mb-5">
             <div className="row border-top px-xl-5">
@@ -44,8 +56,18 @@ export default function NavBar() {
                                 <Link to="/addProduct" className="nav-item nav-link">Add Shoes</Link>
                             </div>
                             <div className="navbar-nav ml-auto py-0">
+                            {
+                                !isLoggedIn&&
                                 <Link to="/signUp" className="nav-item nav-link">Sign-Up</Link>
-                                <a href="" className="nav-item nav-link">Sign In</a>
+                            }
+                            {
+                                !isLoggedIn&&
+                                <Link to="/signIn" className="nav-item nav-link">Sign In</Link>
+                            }
+                            {
+                                isLoggedIn&&
+                                <Link to="/" onClick={signout} className="nav-item nav-link">Sign Out</Link>
+                            }
                             </div>
                         </div>
                     </nav>

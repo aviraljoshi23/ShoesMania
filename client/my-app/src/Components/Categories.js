@@ -12,12 +12,11 @@ export default function Categories() {
                             <div class="cat-item d-flex flex-column border mb-4" style={{ padding: "30px" }}>
                                 <p class="text-right">{item.brandName}</p>
                                 <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                                    <img class="img-fluid" src={"http://localhost:3000/BrandImages/"+item.brandImage} style={{ height: 300, width: 400 }} alt="" />
+                                    <img class="img-fluid" src={"/BrandImages/"+item.brandImage} style={{ height: 300, width: 400 }} alt="" />
                                 </a>
                                 <h5 class="font-weight-semi-bold m-0">{item.brandName}</h5>
                             </div>
                         </div>
-
                     )
                 }
             </div>

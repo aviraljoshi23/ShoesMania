@@ -2,30 +2,38 @@ import { ToastContainer,toast } from "react-toastify";
 import WebService from "../WebWork/webService";
 import WebApi from "../WebWork/WebApi";
 import { useState } from "react";
-export default function SignUp(){
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "../Service/UserSlice";
+export default function SignIn(){
     const [email,setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const signUp = async (event)=>{
-        
+    const navigate =  useNavigate();
+    const dispatch = useDispatch()
+    const signin = async (event)=>{
         event.preventDefault();
-        console.log(email+" "+ password);
-        let response = await WebService.postApi(WebApi.USER_SIGNUP,{userEmail: email, userPassword: password});
-        if(response.status){ 
-         toast.success("Account Created");
+        try{
+         let response = await WebService.postApi(WebApi.USER_SIGNIN,{userEmail:email,userPassword:password});
+         if(response.data.status){
+            dispatch(setCurrentUser(response.data.result));
+            navigate("/shop"); 
+            toast.success("Sign IN Successfully");
+         }  
         }
-        else
-          toast.error("Signup Failed...");   
-      }
+        catch(error){
+            toast.error("Invalid email or password");
+        }  
+       }
     return <>
     <ToastContainer/>
         <div class="container">
             <div class="row">
                 <div class="col">
                     <div class="mb-4">
-                        <h4 class="font-weight-semi-bold mb-4 text-center">New Account</h4>
+                        <h4 class="font-weight-semi-bold mb-4 text-center">Sign In Here</h4>
                         <hr/>
-                        <form onSubmit={signUp}>
-                        <div class="row">
+                        <form onSubmit={signin}>
+                        <div class="row">-
                             <div class="col-md-6 form-group">
                                 <label>User Email Id</label>
                                 <input class="form-control" type="text"  onChange={(event)=>setEmail(event.target.value)}placeholder="John" />
@@ -35,7 +43,7 @@ export default function SignUp(){
                                 <input class="form-control input-group-append" onChange={(event)=>setPassword(event.target.value)} type="password" />
                             </div>
                             <div class="input-group-append text-center">
-                                <button type="submit" class="btn btn-primary px-4 ">Create Account</button>
+                                <button type="submit" class="btn btn-primary px-4 ">Sign In</button>
                             </div>
                         </div>
                         </form>

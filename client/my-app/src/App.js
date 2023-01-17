@@ -13,6 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { fetchProduct } from "./Service/ProductSlice";
 import ShopDetails from "./Components/ShopDetail";
 import SignUp from "./PageComponents/SignUp";
+import SignIn from "./PageComponents/SignIn";
 function App() {
   let dispatch = useDispatch();
   useEffect(()=>{
@@ -28,8 +29,9 @@ function App() {
           <Route path="/shop" element={<Shop/>}></Route>
           <Route path="/addBrand" element={<AddBrand/>}></Route>
           <Route path="/addProduct" element={<AddProduct></AddProduct>}></Route>
-          <Route path="/ShopDetail" element={<ShopDetails></ShopDetails>}></Route>
+          <Route path="/shopDetail" element={<ShopDetails></ShopDetails>}></Route>
           <Route path="/signUp" element={<SignUp></SignUp>}></Route>
+          <Route path="/signIn" element={<SignIn></SignIn>}></Route>
         </Routes>
         <Footer></Footer>
         </BrowserRouter>

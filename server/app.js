@@ -7,6 +7,7 @@ import brandRoute from './routes/brand.route.js';
 import cors from "cors";
 import productRoute from './routes/product.route.js';
 import userRoute from './routes/user.route.js';
+import cartRoute from './routes/cart.route.js';
 
 const app =  express();
 
@@ -31,6 +32,7 @@ mongoose.connect('mongodb://aviraljoshi23:rad72313@ac-2ixfqzf-shard-00-00.bsvezu
         app.use("/brand",brandRoute);
         app.use("/product",productRoute);
         app.use("/user",userRoute);
+        app.use("/cart",cartRoute);
         app.listen(3000,(req,res)=>{
             console.log(`listening on http://localhost:${3000}`);
         })
