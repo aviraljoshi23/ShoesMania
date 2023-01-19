@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../Service/UserSlice";
+import { fetchCart } from "../Service/CartSlice";
 export default function SignIn(){
     const [email,setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -16,7 +17,8 @@ export default function SignIn(){
          let response = await WebService.postApi(WebApi.USER_SIGNIN,{userEmail:email,userPassword:password});
          if(response.data.status){
             dispatch(setCurrentUser(response.data.result));
-            navigate("/shop"); 
+            dispatch(fetchCart(response.data.result._id));
+            // navigate("/shop"); 
             toast.success("Sign IN Successfully");
          }  
         }

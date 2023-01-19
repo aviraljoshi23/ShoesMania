@@ -26,8 +26,6 @@ const productSlice = createSlice({
         });
         builder.addCase(fetchProduct.fulfilled, (state, action) => {
             state.value.productList = action.payload;
-            console.log("In Product Slice")
-            console.log(state.value.productList);
             state.value.isLoading = false;
         })
         builder.addCase(fetchProduct.rejected, (state) => {

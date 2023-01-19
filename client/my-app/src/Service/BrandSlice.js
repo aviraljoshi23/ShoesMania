@@ -20,8 +20,6 @@ const brandSlice = createSlice({
     },
     reducers: {
         add: (state, action) => {
-            console.log("In brand (Add) Action")
-            console.log(action.payload);
             state.value.brandList.push(action.payload);
         }
     },
@@ -31,8 +29,6 @@ const brandSlice = createSlice({
         });
         builder.addCase(fetchBrand.fulfilled, (state, action) => {
             state.value.brandList = action.payload;
-            console.log("In Brand Slice")
-            console.log(state.value.brandList);
             state.value.isLoading = false;
         })
         builder.addCase(fetchBrand.rejected, (state) => {

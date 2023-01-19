@@ -3,18 +3,18 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logOut } from '../Service/UserSlice';
+import { clearCart } from '../Service/CartSlice';
 export default function NavBar() {
     const {brandList} = useSelector(state=>state.brand.value);
-    console.log("ON Brand Page")
-    console.log(brandList);
-
+    const  {user} =  useSelector(state=>state.user.value);
+    
    let {isLoggedIn} =  useSelector(state=>state.user.value);
-   console.log(isLoggedIn);
    let dispatch = useDispatch();
    let navigate =  useNavigate();
    const signout = ()=>{
     dispatch(logOut());
-    navigate("/");
+    dispatch(clearCart());
+    navigate("/shop");
  }
     return <>
         <div className="container-fluid mb-5">
@@ -45,9 +45,12 @@ export default function NavBar() {
                                 <Link to="/" className="nav-item nav-link active">Home</Link>
                                 <Link to="shop" className="nav-item nav-link">Shop</Link>
                                 <div className="nav-item dropdown">
-                                    <a href="#" className="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
+                                    <a href="#" className="nav-link dropdown-toggle" data-toggle="dropdown">User</a>
                                     <div className="dropdown-menu rounded-0 m-0">
-                                        <a href="cart.html" className="dropdown-item">Shopping Cart</a>
+                                            {
+                                        isLoggedIn&&
+                                        <Link to="UserCart" className="nav-item nav-link">User Cart</Link>
+                                        }
                                         <a href="checkout.html" className="dropdown-item">Checkout</a>
                                     </div>
                                 </div>
@@ -66,7 +69,7 @@ export default function NavBar() {
                             }
                             {
                                 isLoggedIn&&
-                                <Link to="/" onClick={signout} className="nav-item nav-link">Sign Out</Link>
+                                <Link to="/signIn" onClick={signout} className="nav-item nav-link">Sign Out {user.useEmail}</Link>
                             }
                             </div>
                         </div>

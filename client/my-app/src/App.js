@@ -14,6 +14,8 @@ import { fetchProduct } from "./Service/ProductSlice";
 import ShopDetails from "./Components/ShopDetail";
 import SignUp from "./PageComponents/SignUp";
 import SignIn from "./PageComponents/SignIn";
+import UserCart from "./PageComponents/cart";
+import ProtectedRoute from "./Components/ProtectedRoute";
 function App() {
   let dispatch = useDispatch();
   useEffect(()=>{
@@ -32,6 +34,7 @@ function App() {
           <Route path="/shopDetail" element={<ShopDetails></ShopDetails>}></Route>
           <Route path="/signUp" element={<SignUp></SignUp>}></Route>
           <Route path="/signIn" element={<SignIn></SignIn>}></Route>
+          <Route path="/UserCart" element={<ProtectedRoute><UserCart/></ProtectedRoute>}></Route>
         </Routes>
         <Footer></Footer>
         </BrowserRouter>

@@ -1,8 +1,6 @@
 import { useSelector } from "react-redux";
 export default function Categories() {
     const { brandList } = useSelector(state => state.brand.value);
-    console.log("ON Brand Page")
-    console.log(brandList);
     return <>
         <div class="container-fluid pt-5">
             <div class="row px-xl-5 pb-3">

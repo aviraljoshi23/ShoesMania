@@ -1,21 +1,35 @@
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom";
 import { ToastContainer,toast } from "react-toastify";
+import WebApi from "../WebWork/WebApi";
+import WebService from "../WebWork/webService";
+import { addToUserCart } from "../Service/CartSlice";
+
 export default function Shop() {
     const { productList } = useSelector(state => state.product.value);
+    const {isLoggedIn,user} = useSelector(state=>state.user.value);
+    let dispatch = useDispatch();
     const navigate = useNavigate();
     const viewProduct = (e,item) => {
         e.preventDefault();
         navigate("/shopDetail",{state:item});
     }
-    const addToCart = (e,item)=>{
+    const addToCart = async(e,item)=>{
         e.preventDefault();
-        console.log(item);
-        toast.success("Item Added to Cart");
-    }
+        if(isLoggedIn){
+            let response = await WebService.postApi(WebApi.ADD_CART_ITEM,{userId:user._id,productItems:item});
+            if(response.data.status){
+                toast.success("Added");
+                dispatch(addToUserCart(item));
 
+            }
+        }
+        else{
+            toast.error("There is a error");
+        }
+    }
     return <>
-    <ToastContainer/>
+     <ToastContainer/>
         <div class="container-fluid pt-5">
             <div class="row px-xl-5">
                 <div class="col-lg-3 col-md-12">

@@ -1,14 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-
-
-
 const slice = createSlice({
     name: "user",
     initialState:{
         value:{
             user: {},
-            isLoggedIn:  false
+            isLoggedIn:  false,
+             token :''
         }
     },
     reducers:{

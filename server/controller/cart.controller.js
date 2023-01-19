@@ -1,90 +1,67 @@
-import { foodItems } from "../model/food.modal.js"
-import { hotelModel } from "../model/hotel.modal.js"
-import { cartModel } from "../model/cart.model.js"
+import { cartModel } from "../model/cart.model.js";
 
 
-export const loadData = async (request,response,next)=>{
-    let currentUserId = request.session.currentUserId;
-    let cartItems = await cartModel.findOne({userId: currentUserId})
-    let cartItemList = [];
-    for(let index=0; index<cartItems.foodList.length; index++){
-        let item = cartItems.foodList[index].toJSON();
-        item.qty = 1;
-        cartItemList.push(item);
-    }
-    return response.status(200).json({itemList: cartItemList});
-}
+// export const addToCart = async(req,res,next)=>{
+//     console.log(req.body);
 
-export const cartItem = async (request,response,next)=>{
-    let currentUserId = request.session.currentUserId;
-    let cartItems = await cartModel.findOne({userId: currentUserId})
-    let hotelList = await hotelModel.find();
-    
-    return response.render("user/user-cart.ejs",{
-         currentUser: request.session,
-         cartItemList: cartItems.foodList,
-         hotelList: hotelList        
-    });
-}
-
-export const addToCart =  async(req,res,next)=>{
-    let foodDetails =  await foodItems.findById(req.params.foodId);
-    let currentUserId =  req.session.currentUserId;
-    let user = await cartModel.findOne({userId:currentUserId});
-    console.log(user);
-    if(user){
-        let index =  0;
-        for(;index<user.foodList.length;index++){
-            console.log(user.foodList[index].foodId);
-            if(user.foodList[index].foodId == req.params.foodId){
-                console.log("Already Exist");
-                return res.status(200).json({message:"Already Added"});
-            }
-        }
-        if(index == user.foodList.length){
-            user.foodList.push({
-                foodId : foodDetails._id,
-                foodName:foodDetails.foodName,
-                foodImage:foodDetails.foodImage,
-                foodPrice:foodDetails.foodPrice
-            });
-            console.log(user);
-            console.log("Food Added In Cart");
-            let  status = await cartModel.create(user);
-            return res.status(200).json({message:'Food Added To Cart'});
-        }
+//     if(req.body){
+//         return res.status(200).json({message:"Added To Cart",status:true})
+//     }
+// }
+export const addToCart = async(req,res,next)=>{
+    console.log(req.body);
+    let cart = await cartModel.findOne({userId:req.body.userId});
+    if(cart){
+        cart.productList.push(req.body.productItems);;
+        cart.save().then(result=>{
+            return res.status(200).json({message:"Item added to  cart",status:true});  
+        }).catch(err=>{
+            return  res.status(500).json({message:"Internal Server Error",status:false})
+        })
     }
     else{
-        let result =  await cartModel.create({
-            userId:currentUserId,
-            foodList:[{
-                foodId:req.params.foodId,
-                foodName:foodDetails.foodName,
-                foodPrice:foodDetails.foodPrice,
-                foodImage:foodDetails.foodImage,
-            }]
+        cartModel.create({
+             userId:req.body.userId,
+             productList:req.body.productItems
+        }).then(result=>{
+            return res.status(200).json({message:"Item Added  to cart",status:true});
+        }).catch(err=>{
+            return res.status(500).json({message:"Internal Server Error",status:false});
         })
-        let status =  await cartModel.create(user);
-        return res.status(200).json({message:"Added In cart"});
     }
-
 }
 
-// export const remove = async(req,res,next)=>{
-//     let hotelList = await hotelModel.find();
-//     cartModel.updateOne({ userId:req.session.currentUserId},{
-//         $pull:{foodList:{foodId:req.params.foodId}}})
-//         .then(result=>{
-//             console.log("Removed");
-//             let cartItems = cartModel.findOne({userId: currentUserId})
-//             let cartItemList = [];
-//             for(let index=0; index<cartItems.foodList.length; index++){
-//                 let item = cartItems.foodList[index].toJSON();
-//                 item.qty = 1;
-//                 cartItemList.push(item);
-//             }
-//            return  res.render("user/user-cart.ejs",{cartItemList: result.foodList,currentUser:req.session,hotelList:hotelList});
-//         }).catch(err=>{
-//             console.log(err);
-//         })
+export const loadCart = async (req,res,next)=>{
+    console.log(req.body.userId);
+    let cartItems = await cartModel.findOne({userId: req.body.userId});
+    console.log(cartItems);
+    let cartItemList = [];
+    if(cartItems==null){
+        return res.status(200).json({productList:[]});
+    }
+    else{
+        for(let index=0; index<cartItems.productList.length; index++){
+            let item = cartItems.productList[index];
+            item.qty = 1;
+            cartItemList.push(item);
+        }
+        return  res.status(200).json({productList: cartItemList});
+    }
+}
+
+// export const removeItem  = async(req,res,next)=>{
+//     console.log(req.body.userId);
+//     console.log(req.body.index);
+
+//     let data =  await cartModel.findOne({userId:req.body.userId},function(r))
 // }
+
+export const removeItem = (req,res,next)=>{
+    cartModel.updateOne({userId : req.body.userId},
+        { $pull: { productList : {_id: req.body.product._id}}}
+        ).then(result=>{
+            return res.status(200).json({message:"Item Removed From Cart",status:true});  
+        }).catch(err=>{
+            return res.status(500).json({message:"Internal Server Error",status:false});
+        })
+};

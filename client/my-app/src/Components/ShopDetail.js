@@ -1,15 +1,31 @@
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useLocation } from 'react-router-dom';
+import { addToUserCart } from "../Service/CartSlice";
+import WebService from "../WebWork/webService";
+import WebApi from "../WebWork/WebApi";
+import { ToastContainer,toast } from "react-toastify";
 
 export default function ShopDetails() {
 
+    const {isLoggedIn,user} = useSelector(state=>state.user.value);
     const location = useLocation();
-    console.log("On Shop Details Page ");
+    let dispatch = useDispatch();
     const productObject = location.state;
-    console.log(productObject);
-
+    const addToCart = async(e,item)=>{
+        e.preventDefault();
+        if(isLoggedIn){
+            let response = await WebService.postApi(WebApi.ADD_CART_ITEM,{userId:user._id,productItems:item});
+            if(response.data.status){
+                toast.success("Added");
+                dispatch(addToUserCart(item));
+            }
+        }
+        else{
+            toast.error("There is a error");
+        }
+    }
     return <>
-        <h1> In shop details</h1>
+    <ToastContainer/>
         <div class="container-fluid">
             <div class="row px-xl-5">
                 <div class="col-lg-5 pb-5">
@@ -117,7 +133,7 @@ export default function ShopDetails() {
                                 </button>
                             </div>
                         </div>
-                        <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
+                        <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1" onClick={(e)=>addToCart(e,productObject)}></i> Add To Cart</button>
                     </div>
                     <div class="d-flex pt-2">
                         <p class="text-dark font-weight-medium mb-0 mr-2">Share on:</p>
